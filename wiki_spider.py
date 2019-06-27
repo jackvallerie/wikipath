@@ -1,6 +1,7 @@
 import requests, sys, re
 from lxml import html
 from page_node import PageNode
+from pprint import pprint
 
 
 class WikiSpider:
@@ -18,7 +19,7 @@ class WikiSpider:
         to find the target_page
         '''
         while self.queue:
-            curr_page = self.queue.pop()
+            curr_page = self.queue.pop(0)
             print("Crawling {}".format(curr_page.url_suffix))
             links = self.get_page_links(curr_page.url_suffix)
 
@@ -35,7 +36,7 @@ class WikiSpider:
                 '''
                 if re.match('^/wiki/(Category:(?!.*:)|(?!.*:)).*', href) and href not in self.visited:
                     
-                    print("Adding {} to the queue".format(href))
+                    # print("Adding {} to the queue".format(href))
                     self.visited.add(href)
                     self.queue.append(PageNode(url_suffix=href, parent=curr_page))
 
@@ -52,7 +53,7 @@ class WikiSpider:
             link_path.insert(0, self.get_page_title(curr_page.url_suffix))
             curr_page = curr_page.parent
         
-        print(link_path)
+        pprint(link_path)
 
 
     def get_page_links(self, url_suffix):
